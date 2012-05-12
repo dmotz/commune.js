@@ -2,6 +2,7 @@
 
 /*
   * Commune.js
+  * Web workers lose their chains
   * Easy, DRY, transparent worker threads for your app
   * Dan Motzenbecker
   * MIT License
@@ -9,9 +10,9 @@
 
 
 (function() {
-  var Commune, makeBlob, testSupport, threadSupport, workers;
+  var Commune, communes, makeBlob, testSupport, threadSupport;
 
-  workers = {};
+  communes = {};
 
   makeBlob = null;
 
@@ -20,7 +21,7 @@
     Commune.name = 'Commune';
 
     function Commune(fn) {
-      var blobUrl, fnName, fnString, lastReturnIndex, returnStatement;
+      var fnName, fnString, lastReturnIndex, returnStatement;
       fnString = fn.toString();
       if (fnString.match(/this/)) {
         (typeof console !== "undefined" && console !== null) && console.warn("Commune: Referencing `this` within a worker process will not work.\n\nThe passed function appears to use it, but the worker will still be created.");
@@ -36,15 +37,16 @@
         fnString = fnString.replace(fnName[1], 'init');
       }
       fnString = fnString + '\nself.addEventListener(\'message\', function(e){\n' + 'init.apply(this, e.data);\n})';
-      blobUrl = makeBlob(fnString);
-      this.worker = new Worker(blobUrl);
+      this.blobUrl = makeBlob(fnString);
     }
 
-    Commune.prototype.postMessage = function(args, cb) {
-      this.worker.addEventListener('message', function(e) {
+    Commune.prototype.spawnWorker = function(args, cb) {
+      var worker;
+      worker = new Worker(this.blobUrl);
+      worker.addEventListener('message', function(e) {
         return cb(e.data);
       });
-      return this.worker.postMessage(args);
+      return worker.postMessage(args);
     };
 
     return Commune;
@@ -99,7 +101,7 @@
   threadSupport = testSupport();
 
   window.commune = function(fn, args, cb) {
-    var argList, callback, fnString, result, self, worker;
+    var argList, callback, commune, fnString, result, self;
     self = window.commune.caller;
     if (!(self != null)) {
       self = window;
@@ -122,18 +124,19 @@
         throw new Error('Commune: Must pass a callback to utilize worker result');
       }
       fnString = fn.toString();
-      if (!workers[fnString]) {
-        worker = new Commune(fn);
-        workers[fnString] = worker;
+      if (!communes[fnString]) {
+        commune = new Commune(fn);
+        communes[fnString] = commune;
       } else {
-        worker = workers[fnString];
+        commune = communes[fnString];
       }
-      return worker.postMessage(argList, callback);
+      return commune.spawnWorker(argList, callback);
     } else {
       if (!(args != null) && !(cb != null)) {
         return fn.call(self);
       }
       if (typeof args === 'function' || !(args != null)) {
+        cb = args;
         args = [];
       }
       result = fn.apply(self, args);
