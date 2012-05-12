@@ -61,6 +61,12 @@ Just write your functions as you normally would using return statements.
 
 
 ### Caveats
+If you're trying out Commune.js locally using the `file:///` protocol, threading won't work. This is due to the fact that it can't create pseudo-URLs for the binary worker data over the `file:///` protocol. An easy solution for testing is to use any web server locally. The fastest way may be to run
+```
+python -m SimpleHTTPServer
+```
+within the project directory, or serve it with Node, Apache, etc.
+
 Since web workers operate in a different context, you can't reference any variables outside of the function's scope (including the DOM) and you can't use references to `this` since it will refer to the worker itself. For functions you want to use Commune.js with, use a functional style where they return a modified version of their input.
 
 Also, since this is an abstraction designed for ease-of-use and transparency, it does not work exactly as web workers do -- namely you can't have multiple return events from a single worker.
