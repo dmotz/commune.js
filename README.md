@@ -4,7 +4,7 @@
 ### Intro
 Commune.js makes it easy to run computationally heavy functions in a separate thread and retrieve the results asynchronously. By delegating these functions to a separate thread, you can avoid slowing down the main thread that affects the UI.
 
-Using straightforward syntax, you can add web worker support to your app's functions without the need to create separate files (as web workers typically require) and without the need to change the syntax of your functions. Best of all, everything will work identically on browsers that do not support web workers.
+Using straightforward syntax, you can add web worker support to your app's functions without the need to create separate files (as web workers typically require) and without the need to change the syntax of your functions. Best of all, everything will work without problems on browsers that do not support web workers.
 
 
 ### Usage
@@ -51,6 +51,8 @@ In a browser without web worker support, everything still works, just in a diffe
 I will appear before the above does.
 I probably will too, depending on how fast your CPU is.
 ```
+
+With Commune.js, we could proceed with our work in the main thread without waiting to loop 100 million times.
 
 
 ### How It Works
