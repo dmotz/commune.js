@@ -44,7 +44,8 @@
       var worker;
       worker = new Worker(this.blobUrl);
       worker.addEventListener('message', function(e) {
-        return cb(e.data);
+        cb(e.data);
+        return worker.terminate();
       });
       return worker.postMessage(args);
     };

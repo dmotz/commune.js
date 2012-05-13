@@ -50,6 +50,7 @@ class Commune
     worker = new Worker @blobUrl
     worker.addEventListener 'message', (e) ->
       cb e.data
+      worker.terminate()
 
     worker.postMessage args
 
