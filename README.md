@@ -27,7 +27,7 @@ commune(heavyFunction, [1, 2, 3], function(result){
 });
 
 //go ahead and continue with more work in the main thread without being held up:
-console.log('I will appear before the above does.');
+console.log('I will appear before the loop finishes.');
 
 setTimeout(function(){
     console.log('I probably will too, depending on how fast your CPU is.');
@@ -38,7 +38,7 @@ setTimeout(function(){
 In a browser that supports worker threads, the above will output:
 
 ```
-I will appear before the above does.
+I will appear before the loop finishes.
 I probably will too, depending on how fast your CPU is.
 [100000001, 100000002, 100000003]
 ```
@@ -47,7 +47,7 @@ In a browser without web worker support, everything still works, just in a diffe
 
 ```
 [100000001, 100000002, 100000003]
-I will appear before the above does.
+I will appear before the loop finishes.
 I probably will too, depending on how fast your CPU is.
 ```
 
