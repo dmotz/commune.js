@@ -96,6 +96,8 @@ testSupport = ->
     testWorker.terminate()
     true
   catch e
+    if e.name is 'SECURITY_ERR'
+      console? and console.warn 'Commune: Cannot provision workers when serving via `file://` protocol. Serve over http to use worker threads.'
     false
 
 
