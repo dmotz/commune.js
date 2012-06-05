@@ -37,11 +37,11 @@ class Commune
     fnName = fnString.match /function\s(.+)\(/i
 
     if fnName[1]?
-      fnString = fnString.replace fnName[1], 'init'
+      fnString = fnString.replace fnName[1], 'communeInit'
 
-    fnString = fnString +
-      '\nself.addEventListener(\'message\', function(e){\n' +
-      'init.apply(this, e.data);\n})'
+    fnString += 'if(typeof window === \'undefined\'){\n' +
+      'self.addEventListener(\'message\', function(e){\n' +
+      '\ncommuneInit.apply(this, e.data);\n});\n}'
 
     @blobUrl = makeBlob fnString
 
