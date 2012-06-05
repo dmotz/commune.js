@@ -82,7 +82,7 @@ Commune.js automatically creates binary blobs from your functions that can be us
 
 
 ### Caveats
-If you're trying out Commune.js locally using the `file:///` protocol, threading won't work. This is due to the fact that it can't create pseudo-URLs for the binary worker data over the `file:///` protocol. An easy solution for testing is to use any web server locally. If you're setup with Node.js, you can use the excellent [serve](https://github.com/visionmedia/serve) from TJ Holowaychuk like so:
+If you're trying out Commune.js locally using the `file://` protocol, threading won't work. This is due to the fact that it can't create pseudo-URLs for the binary worker data over the `file://` protocol. An easy solution for testing is to use any web server locally. If you're setup with Node.js, you can use the excellent [serve](https://github.com/visionmedia/serve) from TJ Holowaychuk like so:
 
 ```
 $ npm install -g serve
