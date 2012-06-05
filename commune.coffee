@@ -105,9 +105,10 @@ testSupport = ->
 threadSupport = testSupport()
 
 window.commune = (fn, args, cb) ->
-  self = window.commune.caller
-  if not self?
-    self = window
+  me = if window.commune.caller? then window.commune.caller
+
+  if not me?
+    me = window
 
   if typeof fn isnt 'function'
     throw new Error 'Commune: Must pass a function as first argument'
@@ -139,12 +140,12 @@ window.commune = (fn, args, cb) ->
   else
 
     if not args? and not cb?
-      return fn.call self
+      return fn.call me
 
     if typeof args is 'function' or not args?
       cb = args
       args = []
 
-    result = fn.apply self, args
+    result = fn.apply me, args
     cb and cb result
 
