@@ -26,7 +26,7 @@ class Commune
     lastReturnIndex = fnString.lastIndexOf 'return'
 
     if lastReturnIndex is -1
-      throw new Error 'Commune: Target function has no return statement'
+      throw new Error 'Commune: Target function has no return statement.'
 
     returnStatement = fnString.substr(lastReturnIndex)
       .replace('return', '').replace(/\}$/, '').replace ';', ''
@@ -111,7 +111,7 @@ window.commune = (fn, args, cb) ->
     me = window
 
   if typeof fn isnt 'function'
-    throw new Error 'Commune: Must pass a function as first argument'
+    throw new Error 'Commune: Must pass a function as first argument.'
 
   if threadSupport
 
@@ -120,13 +120,13 @@ window.commune = (fn, args, cb) ->
       if typeof cb is 'function'
         callback = cb
       else
-        throw new Error 'Commune: Must pass a callback to utilize worker result'
+        throw new Error 'Commune: Must pass a callback to utilize worker result.'
 
     else if typeof args is 'function'
       callback = args
       argList = []
     else if not args?
-      throw new Error 'Commune: Must pass a callback to utilize worker result'
+      throw new Error 'Commune: Must pass a callback to utilize worker result.'
 
     fnString = fn.toString()
     if not communes[fnString]
