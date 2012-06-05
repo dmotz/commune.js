@@ -72,7 +72,7 @@ testSupport = ->
 
   return false if not URL or not window.Worker
 
-  testString = 'test'
+  testString = 'commune.js'
   try
     if BlobBuilder is window.Blob
       testBlob = new BlobBuilder [testString]
