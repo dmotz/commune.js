@@ -92,6 +92,8 @@ testSupport = ->
         URL.createObjectURL blob.getBlob()
 
     testUrl = URL.createObjectURL rawBlob
+    testWorker = new Worker testUrl
+    testWorker.terminate()
     true
   catch e
     false
