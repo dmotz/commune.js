@@ -67,7 +67,7 @@ threadSupport = do ->
 
   URL = root.URL or root.webkitURL or root.mozURL or false
 
-  return false if not URL or not window.Worker
+  return false unless BlobBuilder and URL and root.Worker
 
   testString = 'commune.js'
   try
