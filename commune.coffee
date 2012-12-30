@@ -144,3 +144,4 @@ root.commune = (fn, args, cb) ->
     result = fn.apply me, args
     cb and cb result
 
+root.commune.isSupported = threadSupport
