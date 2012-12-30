@@ -77,7 +77,7 @@ threadSupport = do ->
         BlobBuilder::mozSlice
       rawBlob = sliceMethod.call testBlob
       makeBlob = (string) ->
-        blob = new BlobBuilder [string], type: 'javascript\/javascript'
+        blob = new BlobBuilder [string], type: 'application\/javascript'
         URL.createObjectURL sliceMethod.call blob
     else
       testBlob = new BlobBuilder

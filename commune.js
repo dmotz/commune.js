@@ -79,7 +79,7 @@
         makeBlob = function(string) {
           var blob;
           blob = new BlobBuilder([string], {
-            type: 'javascript\/javascript'
+            type: 'application\/javascript'
           });
           return URL.createObjectURL(sliceMethod.call(blob));
         };
