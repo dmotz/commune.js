@@ -1,8 +1,10 @@
 ###
   * Commune.js
   * Web workers lose their chains
+  * 0.2.0
   * Easy, DRY, transparent worker threads for your app
   * Dan Motzenbecker
+  * http://oxism.com
   * MIT License
 ###
 
