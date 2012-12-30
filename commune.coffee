@@ -6,7 +6,7 @@
   * MIT License
 ###
 
-
+root = @
 communes = {}
 makeBlob = null
 
@@ -61,20 +61,22 @@ testSupport = ->
     window.MozBlobBuilder or false
 
   return false if not blobConstructor
+  blobConstructor = root.BlobBuilder or root.WebKitBlobBuilder or
+    root.MozBlobBuilder or false
 
   try
     testBlob = new Blob
-    BlobBuilder = window.Blob
+    BlobBuilder = root.Blob
   catch e
     BlobBuilder = blobConstructor
 
-  URL = window.URL or window.webkitURL or window.mozURL or false
+  URL = root.URL or root.webkitURL or root.mozURL or false
 
   return false if not URL or not window.Worker
 
   testString = 'commune.js'
   try
-    if BlobBuilder is window.Blob
+    if BlobBuilder is root.Blob
       testBlob = new BlobBuilder [testString]
       sliceMethod = BlobBuilder::slice or BlobBuilder::webkitSlice or
         BlobBuilder::mozSlice
@@ -104,12 +106,12 @@ testSupport = ->
 
 threadSupport = testSupport()
 
-window.commune = (fn, args, cb) ->
   me = if window.commune.caller? then window.commune.caller
 
   if not me?
     me = window
 
+root.commune = (fn, args, cb) ->
   if typeof fn isnt 'function'
     throw new Error 'Commune: Must pass a function as first argument.'
 
