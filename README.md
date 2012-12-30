@@ -82,21 +82,13 @@ Just write your functions as you normally would using return statements.
 Commune.js automatically creates binary blobs from your functions that can be used as worker scripts.
 
 
+
+```
+
+
+
+
 ### Caveats
-If you're trying out Commune.js locally using the `file://` protocol, threading won't work. This is due to the fact that it can't create pseudo-URLs for the binary worker data over the `file://` protocol. An easy solution for testing is to use any web server locally (like Apache). If you have Node.js installed, you can use [serve](https://github.com/visionmedia/serve) like so:
-
-```
-$ npm install -g serve
-$ cd your_commune.js_test/
-$ serve
-```
-
-or if you have Python:
-
-```
-$ python -m SimpleHTTPServer
-```
-
 Since web workers operate in a different context, you can't reference any variables outside of the function's scope (including the DOM) and you can't use references to `this` since it will refer to the worker itself. For functions you want to use Commune.js with, use a functional style where they return a modified version of their input.
 
 Also, since this is an abstraction designed for ease-of-use and flexibility, it does not work exactly as web workers do -- namely you can't have multiple return events from a single worker.
