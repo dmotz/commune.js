@@ -99,11 +99,6 @@ threadSupport = do ->
     false
 
 
-  me = if window.commune.caller? then window.commune.caller
-
-  if not me?
-    me = window
-
 root.commune = (fn, args, cb) ->
   if typeof fn isnt 'function'
     throw new Error 'Commune: Must pass a function as first argument.'
@@ -134,14 +129,13 @@ root.commune = (fn, args, cb) ->
 
   else
 
-    if not args? and not cb?
-      return fn.call me
+    return fn() unless args and cb
 
-    if typeof args is 'function' or not args?
+    if typeof args is 'function' or not args
       cb = args
       args = []
 
-    result = fn.apply me, args
-    cb and cb result
+    cb? fn args
+
 
 root.commune.isSupported = threadSupport
