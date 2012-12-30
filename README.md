@@ -1,9 +1,10 @@
+#![Karl](http://upload.wikimedia.org/wikipedia/commons/9/90/Karl_and_jenny_marx_1866.jpg)
 # Commune.js
 ## Web workers lose their chains
 Dan Motzenbecker, MIT License
 
 ### Intro
-Commune.js makes it easy to run computationally heavy functions in a separate thread and retrieve the results asynchronously. By delegating these functions to a separate thread, you can avoid slowing down the main thread that affects the UI. Think of it as a way to take advantage of the web workers API without ever having to think about the web workers API.
+Commune.js makes it easy to run computationally heavy functions in a separate thread and retrieve the results asynchronously. By delegating these functions to a separate thread, you can avoid slowing down the main thread that affects the UI. Think of it as a way to leverage the web workers API without ever having to think about the web workers API.
 
 Using straightforward syntax, you can add web worker support to your app's functions without the need to create separate files (as web workers typically require) and without the need to change the syntax of your functions. Best of all, everything will work without problems on browsers that do not support web workers.
 
