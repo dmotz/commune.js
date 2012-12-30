@@ -34,9 +34,7 @@ class Commune
     fnString = fnString.slice(0, lastReturnIndex) +
       "\nself.postMessage(#{ returnStatement });\n}"
 
-    fnName = fnString.match /function\s(.+)\(/i
-
-    fnString = fnString.replace fnName[1], 'communeInit' if fnName[1]?
+    fnString = fnString.replace /^function(.+)?\(/, 'function communeInit('
 
     fnString += 'if(typeof window === \'undefined\'){\n'  +
       'self.addEventListener(\'message\', function(e){\n' +
