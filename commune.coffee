@@ -25,23 +25,20 @@ class Commune
       The passed function appears to use it, but the worker will still be created.
       """
 
-    lastReturnIndex = fnString.lastIndexOf 'return'
-
-    if lastReturnIndex is -1
+    if (lastReturnIndex = fnString.lastIndexOf 'return') is -1
       throw new Error 'Commune: Target function has no return statement.'
 
     returnStatement = fnString.substr(lastReturnIndex)
       .replace('return', '').replace(/\}$/, '').replace ';', ''
 
     fnString = fnString.slice(0, lastReturnIndex) +
-      '\nself.postMessage(' + returnStatement + ');\n}'
+      "\nself.postMessage(#{ returnStatement });\n}"
 
     fnName = fnString.match /function\s(.+)\(/i
 
-    if fnName[1]?
-      fnString = fnString.replace fnName[1], 'communeInit'
+    fnString = fnString.replace fnName[1], 'communeInit' if fnName[1]?
 
-    fnString += 'if(typeof window === \'undefined\'){\n' +
+    fnString += 'if(typeof window === \'undefined\'){\n'  +
       'self.addEventListener(\'message\', function(e){\n' +
       '\ncommuneInit.apply(this, e.data);\n});\n}'
 
@@ -53,16 +50,15 @@ class Commune
     worker.addEventListener 'message', (e) ->
       cb e.data
       worker.terminate()
-
     worker.postMessage args
 
 
 
-testSupport = ->
   blobConstructor = window.BlobBuilder or window.WebKitBlobBuilder or
     window.MozBlobBuilder or false
 
   return false if not blobConstructor
+threadSupport = do ->
   blobConstructor = root.BlobBuilder or root.WebKitBlobBuilder or
     root.MozBlobBuilder or false
 
@@ -106,9 +102,6 @@ testSupport = ->
     false
 
 
-
-threadSupport = testSupport()
-
   me = if window.commune.caller? then window.commune.caller
 
   if not me?
@@ -130,7 +123,7 @@ root.commune = (fn, args, cb) ->
     else if typeof args is 'function'
       callback = args
       argList = []
-    else if not args?
+    else unless args?
       throw new Error 'Commune: Must pass a callback to utilize worker result.'
 
     fnString = fn.toString()
