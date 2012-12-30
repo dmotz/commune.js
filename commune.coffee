@@ -69,7 +69,7 @@ threadSupport = do ->
 
   return false unless BlobBuilder and URL and root.Worker
 
-  testString = 'commune.js'
+  testString = 'true'
   try
     if BlobBuilder is root.Blob
       testBlob = new BlobBuilder [testString]
