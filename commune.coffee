@@ -19,9 +19,9 @@ class Commune
     fnString = fn.toString()
 
     if fnString.match /this/
-      console? and console.warn """
+      console?.warn """
       Commune: Referencing `this` within a worker process will not work.
-
+      `this` will refer to the worker itself.
       The passed function appears to use it, but the worker will still be created.
       """
 
@@ -101,7 +101,8 @@ testSupport = ->
     true
   catch e
     if e.name is 'SECURITY_ERR'
-      console? and console.warn 'Commune: Cannot provision workers when serving via `file://` protocol. Serve over http to use worker threads.'
+      console?.warn 'Commune: Cannot provision workers when serving' +
+        'via `file://` protocol. Serve over http to use worker threads.'
     false
 
 
