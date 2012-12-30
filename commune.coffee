@@ -54,11 +54,8 @@ class Commune
 
 
 
-  blobConstructor = window.BlobBuilder or window.WebKitBlobBuilder or
-    window.MozBlobBuilder or false
-
-  return false if not blobConstructor
 threadSupport = do ->
+  # For deprecated BlobBuilder API support:
   blobConstructor = root.BlobBuilder or root.WebKitBlobBuilder or
     root.MozBlobBuilder or false
 
