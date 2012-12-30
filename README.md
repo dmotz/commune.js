@@ -14,7 +14,7 @@ Here's an example where the first argument is the function to thread, the second
 ```javascript
 var heavyFunction = function(a, b, c){
     //do some work 100 million times
-    for(var i = 0; i < 1e8; i++){
+    for(var i = 0; i < 1e9; i++){
         a++;
         b++;
         c++;
