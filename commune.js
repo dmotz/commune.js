@@ -12,7 +12,7 @@
 
 
 (function() {
-  var Commune, communes, makeBlob, root, threadSupport;
+  var Commune, communes, createCommune, makeBlob, root, threadSupport;
 
   root = this;
 
@@ -23,7 +23,7 @@
   Commune = (function() {
 
     function Commune(fn) {
-      var fnName, fnString, lastReturnIndex, returnStatement;
+      var fnString, lastReturnIndex, returnStatement;
       fnString = fn.toString();
       if (fnString.match(/this/)) {
         if (typeof console !== "undefined" && console !== null) {
@@ -35,10 +35,7 @@
       }
       returnStatement = fnString.substr(lastReturnIndex).replace('return', '').replace(/\}$/, '').replace(';', '');
       fnString = fnString.slice(0, lastReturnIndex) + ("\nself.postMessage(" + returnStatement + ");\n}");
-      fnName = fnString.match(/function\s(.+)\(/i);
-      if (fnName[1] != null) {
-        fnString = fnString.replace(fnName[1], 'communeInit');
-      }
+      fnString = fnString.replace(/^function(.+)?\(/, 'function communeInit(');
       fnString += 'if(typeof window === \'undefined\'){\n' + 'self.addEventListener(\'message\', function(e){\n' + '\ncommuneInit.apply(this, e.data);\n});\n}';
       this.blobUrl = makeBlob(fnString);
     }
@@ -70,7 +67,7 @@
     if (!(BlobBuilder && URL && root.Worker)) {
       return false;
     }
-    testString = 'commune.js';
+    testString = 'true';
     try {
       if (BlobBuilder === root.Blob) {
         testBlob = new BlobBuilder([testString]);
@@ -108,8 +105,19 @@
     }
   })();
 
+  createCommune = function(fn, args, cb) {
+    var commune, fnString;
+    fnString = fn.toString();
+    if (!communes[fnString]) {
+      commune = communes[fnString] = new Commune(fn);
+    } else {
+      commune = communes[fnString];
+    }
+    return commune.spawnWorker(args, cb);
+  };
+
   root.commune = function(fn, args, cb) {
-    var argList, callback, commune, fnString;
+    var argList, callback;
     if (typeof fn !== 'function') {
       throw new Error('Commune: Must pass a function as first argument.');
     }
@@ -127,14 +135,7 @@
       } else if (args == null) {
         throw new Error('Commune: Must pass a callback to utilize worker result.');
       }
-      fnString = fn.toString();
-      if (!communes[fnString]) {
-        commune = new Commune(fn);
-        communes[fnString] = commune;
-      } else {
-        commune = communes[fnString];
-      }
-      return commune.spawnWorker(argList, callback);
+      return createCommune(fn, argList, callback);
     } else {
       if (!(args && cb)) {
         return fn();
@@ -148,5 +149,21 @@
   };
 
   root.commune.isSupported = threadSupport;
+
+  root.communify = function(fn, args) {
+    if (args) {
+      return function(cb) {
+        return createCommune(fn, args, cb);
+      };
+    } else {
+      return function(args, cb) {
+        if (typeof args === 'function') {
+          cb = args;
+          args = [];
+        }
+        return createCommune(fn, args, cb);
+      };
+    }
+  };
 
 }).call(this);
