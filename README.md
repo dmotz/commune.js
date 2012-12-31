@@ -73,6 +73,35 @@ commune(heavyFunction, [170, 180, 190], function(result){
 
 Running the above in a browser with worker support, you'll see the results of each function call appear simultaneously, meaning that none of these large loops had to wait for the others to finish before starting. Using Commune.js with care, you can bring asynchronicity and parallelism to previously inapplicable areas.
 
+To simplify things more, you can DRY up your syntax with the help of `communify()` which transforms your vanilla function into a Commune-wrapped version:
+
+```javascript
+var abcs = function(n){
+    var s = '';
+    for(var i = 0; i < n; i++){
+        s += 'abc';
+    }
+    return s;
+}
+
+// Communify the function for future calls:
+abcs = communify(abcs);
+
+// Or designate some partial application:
+abcs = communify(abcs, [5]);
+
+// Then call it later in a simplified manner:
+abcs(function(s){
+    console.log('my opus:', s);
+});
+
+// Even cleaner with named functions:
+abcs(alert);
+
+// If you didn't use partial application with the original communify call:
+abcs([10], alert);
+```
+
 
 ### How It Works
 When you pass a new function to Commune.js, it creates a modified version of the function using web worker syntax. Commune.js memoizes the result so additional calls using the same function don't have to be rewritten.
@@ -80,12 +109,6 @@ When you pass a new function to Commune.js, it creates a modified version of the
 Just write your functions as you normally would using return statements.
 
 Commune.js automatically creates binary blobs from your functions that can be used as worker scripts.
-
-
-
-```
-
-
 
 
 ### Caveats
