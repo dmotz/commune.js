@@ -140,3 +140,15 @@ root.commune = (fn, args, cb) ->
 
 
 root.commune.isSupported = threadSupport
+
+root.communify = (fn, args) ->
+  if args
+    (cb) -> createCommune fn, args, cb
+  else
+    (args, cb) ->
+      if typeof args is 'function'
+        cb = args
+        args = []
+
+      createCommune fn, args, cb
+
