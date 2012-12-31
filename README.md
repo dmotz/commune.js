@@ -1,4 +1,4 @@
-#![Karl](http://upload.wikimedia.org/wikipedia/commons/9/90/Karl_and_jenny_marx_1866.jpg)
+![Karl](http://upload.wikimedia.org/wikipedia/commons/9/90/Karl_and_jenny_marx_1866.jpg)
 # Commune.js
 ## Web workers lose their chains
 Dan Motzenbecker, MIT License
