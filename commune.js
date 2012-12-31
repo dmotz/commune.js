@@ -144,7 +144,7 @@
         cb = args;
         args = [];
       }
-      return typeof cb === "function" ? cb(fn(args)) : void 0;
+      return typeof cb === "function" ? cb(fn.apply(this, args)) : void 0;
     }
   };
 

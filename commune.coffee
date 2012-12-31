@@ -136,7 +136,7 @@ root.commune = (fn, args, cb) ->
       cb = args
       args = []
 
-    cb? fn args
+    cb? fn.apply @, args
 
 
 root.commune.isSupported = threadSupport
