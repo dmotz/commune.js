@@ -97,6 +97,16 @@ threadSupport = do ->
     false
 
 
+createCommune = (fn, args, cb) ->
+  fnString = fn.toString()
+  unless communes[fnString]
+    commune = communes[fnString] = new Commune fn
+  else
+    commune = communes[fnString]
+
+  commune.spawnWorker args, cb
+
+
 root.commune = (fn, args, cb) ->
   if typeof fn isnt 'function'
     throw new Error 'Commune: Must pass a function as first argument.'
@@ -116,14 +126,7 @@ root.commune = (fn, args, cb) ->
     else unless args?
       throw new Error 'Commune: Must pass a callback to utilize worker result.'
 
-    fnString = fn.toString()
-    if not communes[fnString]
-      commune = new Commune fn
-      communes[fnString] = commune
-    else
-      commune = communes[fnString]
-
-    commune.spawnWorker argList, callback
+    createCommune fn, argList, callback
 
   else
 
