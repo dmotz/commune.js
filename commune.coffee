@@ -51,7 +51,6 @@ class Commune
     worker.postMessage args
 
 
-
 threadSupport = do ->
   # For deprecated BlobBuilder API support:
   blobConstructor = root.BlobBuilder or root.WebKitBlobBuilder or
@@ -97,60 +96,39 @@ threadSupport = do ->
     false
 
 
-createCommune = (fn, args, cb) ->
-  fnString = fn.toString()
-  unless communes[fnString]
-    commune = communes[fnString] = new Commune fn
-  else
-    commune = communes[fnString]
-
-  commune.spawnWorker args, cb
-
-
 root.commune = (fn, args, cb) ->
   if typeof fn isnt 'function'
     throw new Error 'Commune: Must pass a function as first argument.'
 
+  if typeof args is 'function'
+    cb = args
+    args = []
+
   if threadSupport
-
-    if Array.isArray args
-      argList = args
-      if typeof cb is 'function'
-        callback = cb
-      else
+    fnString = fn.toString()
+    unless communes[fnString]
+      unless typeof cb is 'function'
         throw new Error 'Commune: Must pass a callback to utilize worker result.'
+      commune = communes[fnString] = new Commune fn
+    else
+      commune = communes[fnString]
 
-    else if typeof args is 'function'
-      callback = args
-      argList = []
-    else unless args?
-      throw new Error 'Commune: Must pass a callback to utilize worker result.'
-
-    createCommune fn, argList, callback
+    commune.spawnWorker args, cb
 
   else
+    cb fn.apply @, args
 
-    return fn() unless args and cb
-
-    if typeof args is 'function' or not args
-      cb = args
-      args = []
-
-    cb? fn.apply @, args
-
-
-root.commune.isSupported = threadSupport
 
 root.communify = (fn, args) ->
   if args
-    (cb) -> createCommune fn, args, cb
+    (cb) -> commune fn, args, cb
   else
     (args, cb) ->
       if typeof args is 'function'
         cb = args
         args = []
+      commune fn, args, cb
 
-      createCommune fn, args, cb
 
 root.commune.isThreaded = -> threadSupport
 root.commune.disableThreads = -> threadSupport = false
