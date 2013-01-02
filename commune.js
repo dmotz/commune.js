@@ -12,7 +12,7 @@
 
 
 (function() {
-  var Commune, communes, createCommune, makeBlob, root, threadSupport;
+  var Commune, communes, makeBlob, root, threadSupport;
 
   root = this;
 
@@ -105,55 +105,35 @@
     }
   })();
 
-  createCommune = function(fn, args, cb) {
-    var commune, fnString;
-    fnString = fn.toString();
-    if (!communes[fnString]) {
-      commune = communes[fnString] = new Commune(fn);
-    } else {
-      commune = communes[fnString];
-    }
-    return commune.spawnWorker(args, cb);
-  };
-
   root.commune = function(fn, args, cb) {
-    var argList, callback;
+    var commune, fnString;
     if (typeof fn !== 'function') {
       throw new Error('Commune: Must pass a function as first argument.');
     }
+    if (typeof args === 'function') {
+      cb = args;
+      args = [];
+    }
     if (threadSupport) {
-      if (Array.isArray(args)) {
-        argList = args;
-        if (typeof cb === 'function') {
-          callback = cb;
-        } else {
+      fnString = fn.toString();
+      if (!communes[fnString]) {
+        if (typeof cb !== 'function') {
           throw new Error('Commune: Must pass a callback to utilize worker result.');
         }
-      } else if (typeof args === 'function') {
-        callback = args;
-        argList = [];
-      } else if (args == null) {
-        throw new Error('Commune: Must pass a callback to utilize worker result.');
+        commune = communes[fnString] = new Commune(fn);
+      } else {
+        commune = communes[fnString];
       }
-      return createCommune(fn, argList, callback);
+      return commune.spawnWorker(args, cb);
     } else {
-      if (!(args && cb)) {
-        return fn();
-      }
-      if (typeof args === 'function' || !args) {
-        cb = args;
-        args = [];
-      }
-      return typeof cb === "function" ? cb(fn.apply(this, args)) : void 0;
+      return cb(fn.apply(this, args));
     }
   };
-
-  root.commune.isSupported = threadSupport;
 
   root.communify = function(fn, args) {
     if (args) {
       return function(cb) {
-        return createCommune(fn, args, cb);
+        return commune(fn, args, cb);
       };
     } else {
       return function(args, cb) {
@@ -161,9 +141,21 @@
           cb = args;
           args = [];
         }
-        return createCommune(fn, args, cb);
+        return commune(fn, args, cb);
       };
     }
+  };
+
+  root.commune.isThreaded = function() {
+    return threadSupport;
+  };
+
+  root.commune.disableThreads = function() {
+    return threadSupport = false;
+  };
+
+  root.commune.enableThreads = function() {
+    return threadSupport = true;
   };
 
 }).call(this);
