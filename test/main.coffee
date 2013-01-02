@@ -14,7 +14,7 @@ adder = (a = 0, b = 0, c = 0) ->
 
 
 describe 'Commune.js', ->
-  @timeout 20000
+  @timeout 2e4
 
   describe '#commune()', ->
     it 'should compute a function', () ->

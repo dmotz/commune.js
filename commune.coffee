@@ -15,9 +15,7 @@ makeBlob = null
 
 class Commune
 
-  constructor: (fn) ->
-    fnString = fn.toString()
-
+  constructor: (fnString) ->
     if fnString.match /this/
       console?.warn """
       Commune: Referencing `this` within a worker process will not work.
@@ -109,7 +107,7 @@ root.commune = (fn, args, cb) ->
     unless communes[fnString]
       unless typeof cb is 'function'
         throw new Error 'Commune: Must pass a callback to utilize worker result.'
-      commune = communes[fnString] = new Commune fn
+      commune = communes[fnString] = new Commune fnString
     else
       commune = communes[fnString]
 

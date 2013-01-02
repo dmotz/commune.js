@@ -24,7 +24,7 @@
   };
 
   describe('Commune.js', function() {
-    this.timeout(20000);
+    this.timeout(2e4);
     describe('#commune()', function() {
       it('should compute a function', function() {
         return commune(adder, [1, 2, 3], function(r) {

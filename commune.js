@@ -22,9 +22,8 @@
 
   Commune = (function() {
 
-    function Commune(fn) {
-      var fnString, lastReturnIndex, returnStatement;
-      fnString = fn.toString();
+    function Commune(fnString) {
+      var lastReturnIndex, returnStatement;
       if (fnString.match(/this/)) {
         if (typeof console !== "undefined" && console !== null) {
           console.warn("Commune: Referencing `this` within a worker process will not work.\n`this` will refer to the worker itself.\nThe passed function appears to use it, but the worker will still be created.");
@@ -120,7 +119,7 @@
         if (typeof cb !== 'function') {
           throw new Error('Commune: Must pass a callback to utilize worker result.');
         }
-        commune = communes[fnString] = new Commune(fn);
+        commune = communes[fnString] = new Commune(fnString);
       } else {
         commune = communes[fnString];
       }
