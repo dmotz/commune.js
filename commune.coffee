@@ -152,3 +152,6 @@ root.communify = (fn, args) ->
 
       createCommune fn, args, cb
 
+root.commune.isThreaded = -> threadSupport
+root.commune.disableThreads = -> threadSupport = false
+root.commune.enableThreads = -> threadSupport = true
