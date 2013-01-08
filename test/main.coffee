@@ -5,6 +5,8 @@
 base = 1e8
 
 adder = (a = 0, b = 0, c = 0) ->
+  # Can't reference `base` here, since this function will
+  # operate under a different context if threads are supported.
   for i in [0..1e8]
     a++
     b++
@@ -17,7 +19,7 @@ describe 'Commune.js', ->
   @timeout 2e4
 
   describe '#commune()', ->
-    it 'should compute a function', () ->
+    it 'should compute a function', ->
       commune adder, [1, 2, 3], (r) ->
         [a, b, c] = r
         expect(a).to.equal base + 2
