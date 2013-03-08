@@ -42,12 +42,12 @@ describe 'Commune.js', ->
         expect(c).to.equal base + 4
 
     it 'should compute a function without thread support and without arguments', ->
-       commune.disableThreads()
-       commune adder, (r) ->
-         [a, b, c] = r
-         expect(a).to.equal base + 1
-         expect(b).to.equal base + 1
-         expect(c).to.equal base + 1
+      commune.disableThreads()
+      commune adder, (r) ->
+       [a, b, c] = r
+       expect(a).to.equal base + 1
+       expect(b).to.equal base + 1
+       expect(c).to.equal base + 1
 
     describe '#commune.disableThreads()', ->
       it 'should disable threading', ->
