@@ -121,11 +121,7 @@ root.communify = (fn, args) ->
   if args
     (cb) -> commune fn, args, cb
   else
-    (args, cb) ->
-      if typeof args is 'function'
-        cb = args
-        args = []
-      commune fn, args, cb
+    (args, cb) -> commune fn, args, cb
 
 
 root.commune.isThreaded = -> threadSupport
