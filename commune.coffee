@@ -8,7 +8,7 @@
   * MIT License
 ###
 
-root = @
+root     = @
 communes = {}
 makeBlob = null
 
@@ -17,11 +17,11 @@ class Commune
 
   constructor: (fnString) ->
     if fnString.match /this/
-      console?.warn """
-      Commune: Referencing `this` within a worker process will not work.
-      `this` will refer to the worker itself.
-      The passed function appears to use it, but the worker will still be created.
-      """
+      console?.warn '''
+                    Commune: Referencing `this` within a worker process will not work.
+                    `this` will refer to the worker itself.
+                    The passed function appears to use it, but the worker will still be created.
+                    '''
 
     if (lastReturnIndex = fnString.lastIndexOf 'return') is -1
       throw new Error 'Commune: Target function has no return statement.'
@@ -83,17 +83,17 @@ threadSupport = do ->
 
   catch e
     if e.name is 'SECURITY_ERR'
-      console?.warn 'Commune: Cannot provision workers when serving' +
-        'via `file://` protocol. Serve over http to use worker threads.'
+      console.warn 'Commune: Cannot provision workers when serving' +
+        'via `file://` protocol. Serve over http(s) to use worker threads.'
     false
 
 
 root.commune = (fn, args, cb) ->
-  if typeof fn isnt 'function'
+  unless typeof fn is 'function'
     throw new Error 'Commune: Must pass a function as first argument.'
 
   if typeof args is 'function'
-    cb = args
+    cb   = args
     args = []
 
   if threadSupport
@@ -118,6 +118,7 @@ root.communify = (fn, args) ->
     (args, cb) -> commune fn, args, cb
 
 
-root.commune.isThreaded = -> threadSupport
+root.commune.isThreaded     = -> threadSupport
 root.commune.disableThreads = -> threadSupport = false
-root.commune.enableThreads = -> threadSupport = true
+root.commune.enableThreads  = -> threadSupport = true
+
