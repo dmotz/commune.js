@@ -47,43 +47,40 @@ class Commune
 
 
 threadSupport = do ->
-  # For deprecated BlobBuilder API support:
-  blobConstructor = root.BlobBuilder or root.WebKitBlobBuilder or
-    root.MozBlobBuilder or false
-
   try
-    testBlob = new Blob
-    BlobBuilder = root.Blob
+    testBlob = new root.Blob
+    Blob     = root.Blob
   catch e
-    BlobBuilder = blobConstructor
+    Blob = root.BlobBuilder or root.WebKitBlobBuilder or root.MozBlobBuilder or false
 
   URL = root.URL or root.webkitURL or root.mozURL or false
-
-  return false unless BlobBuilder and URL and root.Worker
+  return false unless Blob and URL and root.Worker
 
   testString = 'true'
   try
-    if BlobBuilder is root.Blob
-      testBlob = new BlobBuilder [testString]
-      sliceMethod = BlobBuilder::slice or BlobBuilder::webkitSlice or
-        BlobBuilder::mozSlice
-      rawBlob = sliceMethod.call testBlob
+    if Blob is root.Blob
+      testBlob    = new Blob [testString]
+      sliceMethod = Blob::slice or Blob::webkitSlice or Blob::mozSlice
+      rawBlob     = sliceMethod.call testBlob
+
       makeBlob = (string) ->
-        blob = new BlobBuilder [string], type: 'application\/javascript'
+        blob = new Blob [string], type: 'application\/javascript'
         URL.createObjectURL sliceMethod.call blob
+
     else
-      testBlob = new BlobBuilder
+      testBlob = new Blob
       testBlob.append testString
       rawBlob = testBlob.getBlob()
       makeBlob = (string) ->
-        blob = new BlobBuilder
+        blob = new Blob
         blob.append string
         URL.createObjectURL blob.getBlob()
 
-    testUrl = URL.createObjectURL rawBlob
+    testUrl    = URL.createObjectURL rawBlob
     testWorker = new Worker testUrl
     testWorker.terminate()
     true
+
   catch e
     if e.name is 'SECURITY_ERR'
       console?.warn 'Commune: Cannot provision workers when serving' +
