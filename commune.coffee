@@ -28,10 +28,8 @@ class Commune
 
     returnStatement = fnString.substr(lastReturnIndex).replace /return\s+|;|\}$/g, ''
 
-    fnString = fnString.slice(0, lastReturnIndex) +
-      "\nself.postMessage(#{ returnStatement });\n}"
-
-    fnString = fnString.replace /^function(.+)?\(/, 'function communeInit('
+    fnString = (fnString[...lastReturnIndex] + "\nself.postMessage(#{ returnStatement });\n}")
+                 .replace /^function(.+)?\(/, 'function __communeInit('
 
     fnString += 'if(typeof window === \'undefined\'){\n'  +
       'self.addEventListener(\'message\', function(e){\n' +
