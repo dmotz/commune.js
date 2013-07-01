@@ -33,7 +33,7 @@ class Commune
 
     fnString += 'if(typeof window === \'undefined\'){\n'  +
       'self.addEventListener(\'message\', function(e){\n' +
-      '\ncommuneInit.apply(this, e.data);\n});\n}'
+      '\n__communeInit.apply(this, e.data);\n});\n}'
 
     @blobUrl = makeBlob fnString
 
