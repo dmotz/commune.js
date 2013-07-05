@@ -1,7 +1,7 @@
 ###
   * Commune.js
   * Web workers lose their chains
-  * 0.2.1
+  * 0.2.2
   * Easy, DRY, transparent worker threads for your app
   * Dan Motzenbecker
   * http://oxism.com

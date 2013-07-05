@@ -2,7 +2,7 @@
 /*
   * Commune.js
   * Web workers lose their chains
-  * 0.2.1
+  * 0.2.2
   * Easy, DRY, transparent worker threads for your app
   * Dan Motzenbecker
   * http://oxism.com
@@ -11,9 +11,7 @@
 
 
 (function() {
-  var Commune, communes, makeBlob, root, threadSupport;
-
-  root = this;
+  var Commune, communes, makeBlob, threadSupport;
 
   communes = {};
 
@@ -21,7 +19,7 @@
 
   Commune = (function() {
     function Commune(fnString) {
-      var lastReturnIndex, returnStatement;
+      var lastReturnIndex;
       if (fnString.match(/\bthis\b/)) {
         if (typeof console !== "undefined" && console !== null) {
           console.warn('Commune: Referencing `this` within a worker process might not work as expected.\n`this` will refer to the worker itself or an object created within the worker.');
@@ -30,9 +28,7 @@
       if ((lastReturnIndex = fnString.lastIndexOf('return')) === -1) {
         throw new Error('Commune: Target function has no return statement.');
       }
-      returnStatement = fnString.substr(lastReturnIndex).replace(/return\s+|;|\}$/g, '');
-      fnString = (fnString.slice(0, lastReturnIndex) + ("\nself.postMessage(" + returnStatement + ");\n}")).replace(/^function(.+)?\(/, 'function __communeInit(') + 'if (typeof window === \'undefined\') {\n  self.addEventListener(\'message\', function(e) {\n    __communeInit.apply(this, e.data);\n  });\n}';
-      this.blobUrl = makeBlob(fnString);
+      this.blobUrl = makeBlob((fnString.slice(0, lastReturnIndex) + ("  self.postMessage(" + (fnString.substr(lastReturnIndex).replace(/return\s+|;|\}$/g, '')) + ");\n}")).replace(/^function(.+)?\(/, 'function __communeInit(') + 'if (typeof window === \'undefined\') {\n  self.addEventListener(\'message\', function(e) {\n    __communeInit.apply(this, e.data);\n  });\n}');
     }
 
     Commune.prototype.spawnWorker = function(args, cb) {
@@ -52,19 +48,19 @@
   threadSupport = (function() {
     var Blob, URL, e, rawBlob, sliceMethod, testBlob, testString, testUrl, testWorker;
     try {
-      testBlob = new root.Blob;
-      Blob = root.Blob;
+      testBlob = new this.Blob;
+      Blob = this.Blob;
     } catch (_error) {
       e = _error;
-      Blob = root.BlobBuilder || root.WebKitBlobBuilder || root.MozBlobBuilder || false;
+      Blob = this.BlobBuilder || this.WebKitBlobBuilder || this.MozBlobBuilder || false;
     }
-    URL = root.URL || root.webkitURL || root.mozURL || false;
-    if (!(Blob && URL && root.Worker)) {
+    URL = this.URL || this.webkitURL || this.mozURL || false;
+    if (!(Blob && URL && this.Worker)) {
       return false;
     }
     testString = 'true';
     try {
-      if (Blob === root.Blob) {
+      if (Blob === this.Blob) {
         testBlob = new Blob([testString]);
         sliceMethod = Blob.prototype.slice || Blob.prototype.webkitSlice || Blob.prototype.mozSlice;
         rawBlob = sliceMethod.call(testBlob);
@@ -101,7 +97,7 @@
     }
   })();
 
-  root.commune = function(fn, args, cb) {
+  this.commune = function(fn, args, cb) {
     var commune, fnString;
     if (typeof fn !== 'function') {
       throw new Error('Commune: Must pass a function as first argument.');
@@ -122,11 +118,13 @@
       }
       return commune.spawnWorker(args, cb);
     } else {
-      return cb(fn.apply(this, args));
+      return setTimeout((function() {
+        return cb(fn.apply(this, args));
+      }), 0);
     }
   };
 
-  root.communify = function(fn, args) {
+  this.communify = function(fn, args) {
     if (args) {
       return function(cb) {
         return commune(fn, args, cb);
@@ -138,15 +136,15 @@
     }
   };
 
-  root.commune.isThreaded = function() {
+  this.commune.isThreaded = function() {
     return threadSupport;
   };
 
-  root.commune.disableThreads = function() {
+  this.commune.disableThreads = function() {
     return threadSupport = false;
   };
 
-  root.commune.enableThreads = function() {
+  this.commune.enableThreads = function() {
     return threadSupport = true;
   };
 
