@@ -25,10 +25,11 @@ class Commune
     if (lastReturnIndex = fnString.lastIndexOf 'return') is -1
       throw new Error 'Commune: Target function has no return statement.'
 
-    returnStatement = fnString.substr(lastReturnIndex).replace /return\s+|;|\}$/g, ''
-
-    fnString = (fnString[...lastReturnIndex] + "\nself.postMessage(#{ returnStatement });\n}")
-                .replace(/^function(.+)?\(/, 'function __communeInit(') +
+    @blobUrl = makeBlob (fnString[...lastReturnIndex] +
+                """
+                  self.postMessage(#{ fnString.substr(lastReturnIndex).replace /return\s+|;|\}$/g, '' });
+                }
+                """).replace(/^function(.+)?\(/, 'function __communeInit(') +
                 '''
                 if (typeof window === 'undefined') {
                   self.addEventListener('message', function(e) {
