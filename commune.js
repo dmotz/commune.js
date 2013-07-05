@@ -22,7 +22,7 @@
   Commune = (function() {
     function Commune(fnString) {
       var lastReturnIndex, returnStatement;
-      if (fnString.match(/this/)) {
+      if (fnString.match(/\bthis\b/)) {
         if (typeof console !== "undefined" && console !== null) {
           console.warn('Commune: Referencing `this` within a worker process will not work.\n`this` will refer to the worker itself.\nThe passed function appears to use it, but the worker will still be created.');
         }

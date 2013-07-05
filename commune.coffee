@@ -16,7 +16,7 @@ makeBlob = null
 class Commune
 
   constructor: (fnString) ->
-    if fnString.match /this/
+    if fnString.match /\bthis\b/
       console?.warn '''
                     Commune: Referencing `this` within a worker process will not work.
                     `this` will refer to the worker itself.
