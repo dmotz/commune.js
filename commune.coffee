@@ -8,7 +8,6 @@
   * MIT License
 ###
 
-root     = @
 communes = {}
 makeBlob = null
 
@@ -38,8 +37,6 @@ class Commune
                 }
                 '''
 
-    @blobUrl = makeBlob fnString
-
 
   spawnWorker: (args, cb) ->
     worker = new Worker @blobUrl
@@ -51,17 +48,17 @@ class Commune
 
 threadSupport = do ->
   try
-    testBlob = new root.Blob
-    Blob     = root.Blob
+    testBlob = new @Blob
+    Blob     = @Blob
   catch e
-    Blob = root.BlobBuilder or root.WebKitBlobBuilder or root.MozBlobBuilder or false
+    Blob = @BlobBuilder or @WebKitBlobBuilder or @MozBlobBuilder or false
 
-  URL = root.URL or root.webkitURL or root.mozURL or false
-  return false unless Blob and URL and root.Worker
+  URL = @URL or @webkitURL or @mozURL or false
+  return false unless Blob and URL and @Worker
 
   testString = 'true'
   try
-    if Blob is root.Blob
+    if Blob is @Blob
       testBlob    = new Blob [testString]
       sliceMethod = Blob::slice or Blob::webkitSlice or Blob::mozSlice
       rawBlob     = sliceMethod.call testBlob
@@ -91,7 +88,7 @@ threadSupport = do ->
     false
 
 
-root.commune = (fn, args, cb) ->
+@commune = (fn, args, cb) ->
   unless typeof fn is 'function'
     throw new Error 'Commune: Must pass a function as first argument.'
 
@@ -114,14 +111,14 @@ root.commune = (fn, args, cb) ->
     cb fn.apply @, args
 
 
-root.communify = (fn, args) ->
+@communify = (fn, args) ->
   if args
     (cb) -> commune fn, args, cb
   else
     (args, cb) -> commune fn, args, cb
 
 
-root.commune.isThreaded     = -> threadSupport
-root.commune.disableThreads = -> threadSupport = false
-root.commune.enableThreads  = -> threadSupport = true
+@commune.isThreaded     = -> threadSupport
+@commune.disableThreads = -> threadSupport = false
+@commune.enableThreads  = -> threadSupport = true
 
