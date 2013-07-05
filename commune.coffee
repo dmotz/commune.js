@@ -28,11 +28,14 @@ class Commune
     returnStatement = fnString.substr(lastReturnIndex).replace /return\s+|;|\}$/g, ''
 
     fnString = (fnString[...lastReturnIndex] + "\nself.postMessage(#{ returnStatement });\n}")
-                 .replace /^function(.+)?\(/, 'function __communeInit('
-
-    fnString += 'if(typeof window === \'undefined\'){\n'  +
-      'self.addEventListener(\'message\', function(e){\n' +
-      '\n__communeInit.apply(this, e.data);\n});\n}'
+                .replace(/^function(.+)?\(/, 'function __communeInit(') +
+                '''
+                if (typeof window === 'undefined') {
+                  self.addEventListener('message', function(e) {
+                    __communeInit.apply(this, e.data);
+                  });
+                }
+                '''
 
     @blobUrl = makeBlob fnString
 
