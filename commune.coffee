@@ -83,7 +83,7 @@ threadSupport = do ->
 
   catch e
     if e.name is 'SECURITY_ERR'
-      console.warn 'Commune: Cannot provision workers when serving' +
+      console?.warn 'Commune: Cannot provision workers when serving' +
         'via `file://` protocol. Serve over http(s) to use worker threads.'
     false
 
