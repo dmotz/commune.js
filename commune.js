@@ -24,15 +24,14 @@
       var lastReturnIndex, returnStatement;
       if (fnString.match(/\bthis\b/)) {
         if (typeof console !== "undefined" && console !== null) {
-          console.warn('Commune: Referencing `this` within a worker process will not work.\n`this` will refer to the worker itself.\nThe passed function appears to use it, but the worker will still be created.');
+          console.warn('Commune: Referencing `this` within a worker process might not work as expected.\n`this` will refer to the worker itself or an object created within the worker.');
         }
       }
       if ((lastReturnIndex = fnString.lastIndexOf('return')) === -1) {
         throw new Error('Commune: Target function has no return statement.');
       }
       returnStatement = fnString.substr(lastReturnIndex).replace(/return\s+|;|\}$/g, '');
-      fnString = (fnString.slice(0, lastReturnIndex) + ("\nself.postMessage(" + returnStatement + ");\n}")).replace(/^function(.+)?\(/, 'function __communeInit(');
-      fnString += 'if(typeof window === \'undefined\'){\n' + 'self.addEventListener(\'message\', function(e){\n' + '\n__communeInit.apply(this, e.data);\n});\n}';
+      fnString = (fnString.slice(0, lastReturnIndex) + ("\nself.postMessage(" + returnStatement + ");\n}")).replace(/^function(.+)?\(/, 'function __communeInit(') + 'if (typeof window === \'undefined\') {\n  self.addEventListener(\'message\', function(e) {\n    __communeInit.apply(this, e.data);\n  });\n}';
       this.blobUrl = makeBlob(fnString);
     }
 
