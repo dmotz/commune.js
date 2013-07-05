@@ -18,9 +18,8 @@ class Commune
   constructor: (fnString) ->
     if fnString.match /\bthis\b/
       console?.warn '''
-                    Commune: Referencing `this` within a worker process will not work.
-                    `this` will refer to the worker itself.
-                    The passed function appears to use it, but the worker will still be created.
+                    Commune: Referencing `this` within a worker process might not work as expected.
+                    `this` will refer to the worker itself or an object created within the worker.
                     '''
 
     if (lastReturnIndex = fnString.lastIndexOf 'return') is -1
