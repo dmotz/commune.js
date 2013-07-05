@@ -59,24 +59,21 @@ threadSupport = do ->
   testString = 'true'
   try
     if Blob is @Blob
-      testBlob    = new Blob [testString]
-      sliceMethod = Blob::slice or Blob::webkitSlice or Blob::mozSlice
-      rawBlob     = sliceMethod.call testBlob
+      testBlob    = new Blob [testString], type: 'application\/javascript'
 
       makeBlob = (string) ->
-        blob = new Blob [string], type: 'application\/javascript'
-        URL.createObjectURL sliceMethod.call blob
+        URL.createObjectURL new Blob [string], type: 'application\/javascript'
 
     else
       testBlob = new Blob
       testBlob.append testString
-      rawBlob = testBlob.getBlob()
+      rawBlob  = testBlob.getBlob 'application\/javascript'
       makeBlob = (string) ->
         blob = new Blob
         blob.append string
-        URL.createObjectURL blob.getBlob()
+        URL.createObjectURL blob.getBlob 'application\/javascript'
 
-    testUrl    = URL.createObjectURL rawBlob
+    testUrl    = URL.createObjectURL testBlob
     testWorker = new Worker testUrl
     testWorker.terminate()
     true
@@ -113,7 +110,7 @@ threadSupport = do ->
 
 @communify = (fn, args) ->
   if args
-    (cb) -> commune fn, args, cb
+    (cb) ->       commune fn, args, cb
   else
     (args, cb) -> commune fn, args, cb
 
