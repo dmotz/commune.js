@@ -108,7 +108,7 @@ threadSupport = do ->
     commune.spawnWorker args, cb
 
   else
-    cb fn.apply @, args
+    setTimeout (-> cb fn.apply @, args), 0
 
 
 @communify = (fn, args) ->
