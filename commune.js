@@ -94,7 +94,9 @@
     } catch (_error) {
       e = _error;
       if (e.name === 'SECURITY_ERR') {
-        console.warn('Commune: Cannot provision workers when serving' + 'via `file://` protocol. Serve over http(s) to use worker threads.');
+        if (typeof console !== "undefined" && console !== null) {
+          console.warn('Commune: Cannot provision workers when serving' + 'via `file://` protocol. Serve over http(s) to use worker threads.');
+        }
       }
       return false;
     }
