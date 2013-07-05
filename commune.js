@@ -11,11 +11,13 @@
 
 
 (function() {
-  var Commune, communes, makeBlob, threadSupport;
+  var Commune, communes, makeBlob, mime, threadSupport;
 
   communes = {};
 
   makeBlob = null;
+
+  mime = 'application\/javascript';
 
   Commune = (function() {
     function Commune(fnString) {
@@ -46,7 +48,7 @@
   })();
 
   threadSupport = (function() {
-    var Blob, URL, e, rawBlob, sliceMethod, testBlob, testString, testUrl, testWorker;
+    var Blob, URL, e, rawBlob, testBlob, testString, testUrl, testWorker;
     try {
       testBlob = new this.Blob;
       Blob = this.Blob;
@@ -61,28 +63,26 @@
     testString = 'true';
     try {
       if (Blob === this.Blob) {
-        testBlob = new Blob([testString]);
-        sliceMethod = Blob.prototype.slice || Blob.prototype.webkitSlice || Blob.prototype.mozSlice;
-        rawBlob = sliceMethod.call(testBlob);
+        testBlob = new Blob([testString], {
+          type: mime
+        });
         makeBlob = function(string) {
-          var blob;
-          blob = new Blob([string], {
-            type: 'application\/javascript'
-          });
-          return URL.createObjectURL(sliceMethod.call(blob));
+          return URL.createObjectURL(new Blob([string], {
+            type: mime
+          }));
         };
       } else {
         testBlob = new Blob;
         testBlob.append(testString);
-        rawBlob = testBlob.getBlob();
+        rawBlob = testBlob.getBlob(mime);
         makeBlob = function(string) {
           var blob;
           blob = new Blob;
           blob.append(string);
-          return URL.createObjectURL(blob.getBlob());
+          return URL.createObjectURL(blob.getBlob(mime));
         };
       }
-      testUrl = URL.createObjectURL(rawBlob);
+      testUrl = URL.createObjectURL(testBlob);
       testWorker = new Worker(testUrl);
       testWorker.terminate();
       return true;

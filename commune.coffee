@@ -10,6 +10,7 @@
 
 communes = {}
 makeBlob = null
+mime     = 'application\/javascript'
 
 
 class Commune
@@ -59,19 +60,17 @@ threadSupport = do ->
   testString = 'true'
   try
     if Blob is @Blob
-      testBlob    = new Blob [testString], type: 'application\/javascript'
-
-      makeBlob = (string) ->
-        URL.createObjectURL new Blob [string], type: 'application\/javascript'
+      testBlob = new Blob [testString], type: mime
+      makeBlob = (string) -> URL.createObjectURL new Blob [string], type: mime
 
     else
       testBlob = new Blob
       testBlob.append testString
-      rawBlob  = testBlob.getBlob 'application\/javascript'
+      rawBlob  = testBlob.getBlob mime
       makeBlob = (string) ->
         blob = new Blob
         blob.append string
-        URL.createObjectURL blob.getBlob 'application\/javascript'
+        URL.createObjectURL blob.getBlob mime
 
     testUrl    = URL.createObjectURL testBlob
     testWorker = new Worker testUrl
