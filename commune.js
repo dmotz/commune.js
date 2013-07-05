@@ -48,7 +48,7 @@
   })();
 
   threadSupport = (function() {
-    var Blob, URL, e, rawBlob, testBlob, testString, testUrl, testWorker;
+    var Blob, URL, e, testBlob, testString, testUrl, testWorker;
     try {
       testBlob = new this.Blob;
       Blob = this.Blob;
@@ -74,7 +74,7 @@
       } else {
         testBlob = new Blob;
         testBlob.append(testString);
-        rawBlob = testBlob.getBlob(mime);
+        testBlob = testBlob.getBlob(mime);
         makeBlob = function(string) {
           var blob;
           blob = new Blob;

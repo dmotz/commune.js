@@ -66,7 +66,7 @@ threadSupport = do ->
     else
       testBlob = new Blob
       testBlob.append testString
-      rawBlob  = testBlob.getBlob mime
+      testBlob = testBlob.getBlob mime
       makeBlob = (string) ->
         blob = new Blob
         blob.append string
