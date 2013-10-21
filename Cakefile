@@ -8,6 +8,11 @@ print  = (fn) ->
     console.log stdout, stderr
     fn?()
 
+startWatcher = (bin, args) ->
+  watcher = spawn bin, args?.split ' '
+  watcher.stdout.pipe process.stdout
+  watcher.stderr.pipe process.stderr
+
 
 task 'build', 'Build, minify, and generate docs for Commune', ->
   exec 'coffee -mc commune.coffee', print ->
@@ -16,9 +21,8 @@ task 'build', 'Build, minify, and generate docs for Commune', ->
 
 
 task 'watch', 'Build Commune continuously', ->
-  watcher = spawn 'coffee', ['-mwc', 'commune.coffee']
-  tests   = spawn 'coffee', ['-mwc', 'test/main.coffee']
-  watcher.stdout.on 'data', output
-  watcher.stderr.on 'data', output
-  tests.stdout.on   'data', output
-  tests.stderr.on   'data', output
+  startWatcher.apply @, pair for pair in [
+    ['coffee', '-mwc commune.coffee']
+    ['coffee', '-mwc test/main.coffee']
+  ]
+
