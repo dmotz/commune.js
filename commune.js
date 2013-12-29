@@ -90,7 +90,7 @@
       e = _error;
       if (e.name === 'SECURITY_ERR') {
         if (typeof console !== "undefined" && console !== null) {
-          console.warn('Commune: Cannot provision workers when serving' + 'via `file://` protocol. Serve over http(s) to use worker threads.');
+          console.warn('Commune: Cannot provision workers when serving ' + 'via `file://` protocol. Serve over http(s) to use worker threads.');
         }
       }
       return false;
@@ -110,7 +110,7 @@
       fnString = fn.toString();
       if (!communes[fnString]) {
         if (typeof cb !== 'function') {
-          throw new Error('Commune: Must pass a callback to utilize worker result.');
+          throw new Error('Commune: Must pass a callback to use worker result.');
         }
         commune = communes[fnString] = new Commune(fnString);
       } else {

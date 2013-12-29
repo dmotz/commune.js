@@ -79,7 +79,7 @@ threadSupport = do ->
 
   catch e
     if e.name is 'SECURITY_ERR'
-      console?.warn 'Commune: Cannot provision workers when serving' +
+      console?.warn 'Commune: Cannot provision workers when serving ' +
         'via `file://` protocol. Serve over http(s) to use worker threads.'
     false
 
@@ -96,7 +96,7 @@ threadSupport = do ->
     fnString = fn.toString()
     unless communes[fnString]
       unless typeof cb is 'function'
-        throw new Error 'Commune: Must pass a callback to utilize worker result.'
+        throw new Error 'Commune: Must pass a callback to use worker result.'
       commune = communes[fnString] = new Commune fnString
     else
       commune = communes[fnString]
